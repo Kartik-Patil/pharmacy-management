@@ -15,5 +15,9 @@ public class StockItem {
 
     private int availableQty;
 
-    // getters and setters
+    public Long getId() { return id; }
+    public String getMedicineName() { return medicineName; }
+    public void setMedicineName(String medicineName) { this.medicineName = medicineName; }
+    public int getAvailableQty() { return availableQty; }
+    public void setAvailableQty(int availableQty) { this.availableQty = availableQty; }
 }

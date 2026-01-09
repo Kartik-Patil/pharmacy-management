@@ -12,12 +12,15 @@ public class PharmacyOrderService {
 
     private final PharmacyOrderItemRepository itemRepo;
     private final StockItemRepository stockRepo;
+    private final PharmacyOrderRepository orderRepo;
 
     public PharmacyOrderService(
             PharmacyOrderItemRepository itemRepo,
-            StockItemRepository stockRepo) {
+            StockItemRepository stockRepo,
+            PharmacyOrderRepository orderRepo) {
         this.itemRepo = itemRepo;
         this.stockRepo = stockRepo;
+        this.orderRepo = orderRepo;
     }
 
     public void dispense(Long orderItemId, int qty) {
@@ -35,10 +38,13 @@ public class PharmacyOrderService {
         item.setDispensedQty(item.getDispensedQty() + qty);
         stock.setAvailableQty(stock.getAvailableQty() - qty);
 
-        if (item.getDispensedQty() < item.getPrescribedQty()) {
-            item.getOrder().setStatus(OrderStatus.PARTIALLY_DISPENSED);
-        } else {
-            item.getOrder().setStatus(OrderStatus.COMPLETED);
-        }
+        PharmacyOrder order = item.getOrder();
+        order.setStatus(
+                item.getDispensedQty() < item.getPrescribedQty()
+                        ? OrderStatus.PARTIALLY_DISPENSED
+                        : OrderStatus.COMPLETED
+        );
+
+        orderRepo.save(order);
     }
 }

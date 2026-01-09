@@ -1,23 +1,23 @@
 package com.crinsun.pharmacy.controller;
 
-import com.crinsun.pharmacy.dto.DispenseRequestDTO;
-import com.crinsun.pharmacy.service.PharmacyOrderService;
-import org.springframework.http.ResponseEntity;
+import com.crinsun.pharmacy.entity.PharmacyOrderItem;
+import com.crinsun.pharmacy.repository.PharmacyOrderItemRepository;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/pharmacy")
 public class PharmacyOrderController {
 
-    private final PharmacyOrderService service;
+    private final PharmacyOrderItemRepository itemRepo;
 
-    public PharmacyOrderController(PharmacyOrderService service) {
-        this.service = service;
+    public PharmacyOrderController(PharmacyOrderItemRepository itemRepo) {
+        this.itemRepo = itemRepo;
     }
 
-    @PostMapping("/dispense")
-    public ResponseEntity<String> dispense(@RequestBody DispenseRequestDTO dto) {
-        service.dispense(dto.getOrderItemId(), dto.getDispenseQty());
-        return ResponseEntity.ok("Medicine dispensed successfully");
+    @GetMapping("/items")
+    public List<PharmacyOrderItem> getAllItems() {
+        return itemRepo.findAll();
     }
 }
